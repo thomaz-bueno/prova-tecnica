@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: orders-api
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+      accept-float-as-int: false
+  datasource:
+    url: ${ORDERS_DB_URL:jdbc:postgresql://localhost:5433/orders_db}
+    username: ${ORDERS_DB_USERNAME:orders_dev}
+    password: ${ORDERS_DB_PASSWORD:orders_dev}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: ${ORDERS_DDL_AUTO:update}
+
+security:
+  jwt:
+    secret: ${JWT_SECRET}
+    issuer: ${JWT_ISSUER:gateway-api}
+
+server:
+  address: ${ORDERS_SERVER_ADDRESS:127.0.0.1}
+  port: 8081
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-stacktrace: never
+    include-exception: false
+
+springdoc:
+  override-with-generic-response: false
+  swagger-ui:
+    disable-swagger-default-url: true
+    persist-authorization: false
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: "OFF"
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: "OFF"
+    org.hibernate.orm.jdbc.bind: "OFF"
+    org.hibernate.orm.jdbc.extract: "OFF"
+    reactor.netty.http.client: INFO

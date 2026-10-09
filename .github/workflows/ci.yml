@@ -1,0 +1,44 @@
+name: Java CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify ${{ matrix.api }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        api: [gateway-api, orders-api]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Java 21 and Maven cache
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+          cache-dependency-path: '${{ matrix.api }}/pom.xml'
+
+      - name: Run tests, package application and check coverage
+        run: mvn -B -ntp -f "${{ matrix.api }}/pom.xml" clean verify
+
+      - name: Upload JaCoCo report
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-${{ matrix.api }}
+          path: ${{ matrix.api }}/target/site/jacoco/
+          if-no-files-found: warn
+          retention-days: 7

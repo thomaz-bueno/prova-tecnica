@@ -1,0 +1,5 @@
+# Optional local Swagger/diagnostic access to Orders; not needed for client traffic.
+services:
+  orders-api:
+    ports:
+      - "127.0.0.1:8081:8081"
